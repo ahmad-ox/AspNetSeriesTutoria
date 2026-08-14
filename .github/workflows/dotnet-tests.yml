@@ -45,9 +45,7 @@ jobs:
         run: dotnet build AspNetSeriesTutoria.sln --no-restore --configuration Release
 
       - name: Run unit tests
-        run: dotnet test AspNetSeriesTutoria.sln --no-build --no-restore --configuration Release \
-          --logger "trx;LogFileName=dotnet-tests.trx" \
-          --results-directory TestResults
+        run: dotnet test AspNetSeriesTutoria.sln --no-build --no-restore --configuration Release --logger "trx;LogFileName=dotnet-tests.trx" --results-directory TestResults
 
       - name: Upload test results (even on failure)
         if: always()
