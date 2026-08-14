@@ -57,7 +57,7 @@ public class DocumentManagementServiceTests
         Assert.Equal("text/csv", FileContentType.CSV);
         Assert.Equal(
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            FileContentType.CSV);
+            FileContentType.XLSX);
     }
 
     [Fact]
