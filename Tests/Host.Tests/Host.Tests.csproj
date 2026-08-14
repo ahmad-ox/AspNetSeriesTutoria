@@ -19,6 +19,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!--
+      The HTML->PDF tests use HtmlRenderer.PdfSharp / System.Drawing (GDI+).
+      On Linux this requires the runtime switch below AND libgdiplus to be present.
+      The switch is harmless on Windows and lets CI runners with libgdiplus exercise
+      the real code path (tests soft-skip when the platform cannot support GDI+).
+    -->
+    <RuntimeHostConfigurationOption Include="System.Drawing.EnableUnixSupport" Value="true" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Host\Host.csproj" />
     <ProjectReference Include="..\..\Application\Application.csproj" />
   </ItemGroup>

@@ -1,0 +1,58 @@
+name: .NET Tests
+
+# Triggers:
+#   - pull_request targeting `develop`  -> required status check for merge protection
+#   - push to `develop`                 -> keeps the branch green between PRs
+#   - workflow_dispatch                 -> allows manual runs from the Actions tab
+on:
+  pull_request:
+    branches: [ develop ]
+  push:
+    branches: [ develop ]
+  workflow_dispatch:
+
+# Least-privilege permissions for the GITHUB_TOKEN.
+permissions:
+  contents: read
+
+# Cancel any in-progress run for the same branch/PR and start a fresh one.
+# This saves runner minutes on quick follow-up pushes.
+concurrency:
+  group: dotnet-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Job name = the status check you must require in the develop branch
+  # protection rule (Settings -> Branches -> develop -> "dotnet-tests").
+  dotnet-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          # Projects target net8.0; global.json pins the SDK to 8.0.x.
+          dotnet-version: '8.0.x'
+          cache: true
+
+      - name: Restore NuGet packages
+        run: dotnet restore AspNetSeriesTutoria.sln
+
+      - name: Build solution
+        run: dotnet build AspNetSeriesTutoria.sln --no-restore --configuration Release
+
+      - name: Run unit tests
+        run: dotnet test AspNetSeriesTutoria.sln --no-build --no-restore --configuration Release \
+          --logger "trx;LogFileName=dotnet-tests.trx" \
+          --results-directory TestResults
+
+      - name: Upload test results (even on failure)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dotnet-tests-results
+          path: TestResults
+          if-no-files-found: warn
