@@ -6,9 +6,9 @@ name: .NET Tests
 #   - workflow_dispatch                 -> allows manual runs from the Actions tab
 on:
   pull_request:
-    branches: [ develop ]
+    branches: [ develop, master ]
   push:
-    branches: [ develop ]
+    branches: [ develop, master ]
   workflow_dispatch:
 
 # Least-privilege permissions for the GITHUB_TOKEN.
@@ -36,7 +36,7 @@ jobs:
         with:
           # Projects target net8.0; global.json pins the SDK to 8.0.x.
           dotnet-version: '8.0.x'
-          cache: true
+          # cache: true
 
       - name: Restore NuGet packages
         run: dotnet restore AspNetSeriesTutoria.sln
@@ -45,9 +45,7 @@ jobs:
         run: dotnet build AspNetSeriesTutoria.sln --no-restore --configuration Release
 
       - name: Run unit tests
-        run: dotnet test AspNetSeriesTutoria.sln --no-build --no-restore --configuration Release \
-          --logger "trx;LogFileName=dotnet-tests.trx" \
-          --results-directory TestResults
+        run: dotnet test AspNetSeriesTutoria.sln --no-build --no-restore --configuration Release --logger "trx;LogFileName=dotnet-tests.trx" --results-directory TestResults
 
       - name: Upload test results (even on failure)
         if: always()
