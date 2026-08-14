@@ -36,7 +36,7 @@ jobs:
         with:
           # Projects target net8.0; global.json pins the SDK to 8.0.x.
           dotnet-version: '8.0.x'
-          cache: true
+          # cache: true
 
       - name: Restore NuGet packages
         run: dotnet restore AspNetSeriesTutoria.sln
