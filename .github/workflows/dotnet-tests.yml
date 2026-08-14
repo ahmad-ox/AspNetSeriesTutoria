@@ -6,9 +6,9 @@ name: .NET Tests
 #   - workflow_dispatch                 -> allows manual runs from the Actions tab
 on:
   pull_request:
-    branches: [ develop ]
+    branches: [ develop, master ]
   push:
-    branches: [ develop ]
+    branches: [ develop, master ]
   workflow_dispatch:
 
 # Least-privilege permissions for the GITHUB_TOKEN.
